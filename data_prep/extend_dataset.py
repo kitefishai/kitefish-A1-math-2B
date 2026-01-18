@@ -20,13 +20,19 @@ OUT_DIR = BASE_DIR / "output"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 BASE_TRAIN = Path(IN_DIR) / "train.jsonl"
-OUTPUT_FILE = Path(OUT_DIR) / "train_merged.jsonl"
+OUTPUT_FILE = Path(OUT_DIR) / "train_merged_80GB.jsonl"
 
 # Sampling / repeat factors (based on your plan)
 DATASETS = {
+    "mathinstruct.jsonl": {
+        "source": "mathinstruct",
+        "repeat": 5,
+        "text_key": "instruction",  # common format
+        "answer_key": "output",
+    },
     "openwebmath.jsonl": {
         "source": "openwebmath",
-        "repeat": 3,
+        "repeat": 2,
         "text_key": "text",
     },
     "stackexchange.jsonl": {
@@ -34,19 +40,13 @@ DATASETS = {
         "repeat": 2,
         "text_key": "text",
     },
-    # "proofpile.jsonl": {
-    #     "source": "proofpile",
-    #     "repeat": 2,
-    #     "text_key": "text",
-    # },
-    "mathinstruct.jsonl": {
-        "source": "mathinstruct",
-        "repeat": 5,
-        "text_key": "instruction",  # common format
-        "answer_key": "output",
+    "pubmedqa_sciq.jsonl": {
+        "source": "pubmedqa_sciq",
+        "repeat": 1,
+        "text_key": "text",
     },
-    "code_stack.jsonl": {
-        "source": "code",
+    "ultrachat.jsonl": {
+        "source": "ultrachat",
         "repeat": 1,
         "text_key": "content",
     },
