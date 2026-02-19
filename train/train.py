@@ -95,23 +95,6 @@ def main():
         seq_length=768,
         max_samples=max_samples
     )
-    # train_size = int(0.9 * len(dataset))
-    # val_size = len(dataset) - train_size
-    #
-    # train_dataset, val_dataset = random_split(
-    #     dataset, [train_size, val_size]
-    # )
-
-
-    # Setup distributed sampling
-    # if world_size > 1:
-    #     train_dataset.world_size = world_size
-    #     train_dataset.rank = rank
-    #     # Adjust for distributed training
-    #     original_len = len(train_dataset)
-    #     train_dataset.num_docs = original_len // world_size
-    #     if rank == 0:
-    #         print(f"Distributed: each rank gets ~{train_dataset.num_docs:,} documents")
 
     if rank == 0:
         print(f"Dataset size for this rank: {len(train_dataset):,} documents")
