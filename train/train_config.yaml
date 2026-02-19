@@ -1,0 +1,48 @@
+# train_config.yaml
+model_name: "kitefish-a1-1.5B"
+output_dir: "./a1-1.5b-checkpoints"
+logging_dir: "./logs"
+
+# Precision: BF16 (not quantization, just 16-bit floats)
+bf16: true
+fp16: false
+fp8: false  # Disable FP8 quantization
+
+
+# Data
+dataset_path: "./data"  # Your 52B tokens dataset
+dataset_type: "streaming"  # or text, json, parquet, (streaming for .bin) etc.
+dataset_format: "bin"
+max_seq_length: 4096  # Can adjust based on memory
+
+# Training
+num_epochs: 5
+per_device_train_batch_size: 32
+gradient_accumulation_steps: 32
+effective_batch_size: 4  # 2 * 8 * 8 (if 8 GPUs)
+
+# Optimization
+learning_rate: 2e-4  # Can use higher LR for smaller model
+lr_scheduler_type: "cosine"
+warmup_steps: 100
+weight_decay: 0.1
+adam_beta1: 0.9
+adam_beta2: 0.95
+
+# FP8 Mixed Precision
+gradient_checkpointing: true
+#gradient_checkpointing_every_layer: 2
+
+# DeepSpeed Configuration
+deepspeed_config: "./ds_config.json"
+
+# Checkpointing
+save_steps: 1000
+save_total_limit: 5
+logging_steps: 1
+eval_steps: 1000
+
+# MoE-specific
+#moe_train: true
+#moe_eval_capacity_factor: 1.0
+#moe_min_capacity: 4
