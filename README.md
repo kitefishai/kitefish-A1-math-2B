@@ -18,9 +18,9 @@ To ensure the model clears high-level benchmarks (AIME, MATH), we utilized a "Go
 
 | Dataset Source | Weight | Volume | Purpose |
 | :--- |:-------|:-------| :--- |
-| **Cleaned arXiv (Gold)** | 2.0x   | 80 GB  | Specialized Domain Expertise |
-| **OpenWebMath** | 1.0x   | 50 GB  | General Mathematical Concepts |
-| **StackExchange** | 1.0x   | 10 GB  | Q&A Reasoning & Community Logic |x
+| **Cleaned arXiv (Gold)** | 1.0x   | 80 GB  | Specialized Domain Expertise |
+| **OpenWebMath** | 2.0x   | 50 GB  | General Mathematical Concepts |
+| **StackExchange** | 2.0x   | 10 GB  | Q&A Reasoning & Community Logic |x
 | **MathInstruct** | 1.0x   | 260k   | Multi-step Problem Solving |
 | **PubMedQA / SciQ** | 1.0x   | 50k    | Scientific Verification |
 | **UltraChat** | 1.0x   | 50k    | RAG & Conversational Alignment |
