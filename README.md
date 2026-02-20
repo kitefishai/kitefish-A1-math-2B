@@ -1,9 +1,14 @@
-# KiteFish-A1-1.5B  
-*A Scientific & Mathematical Language Model Trained from Raw arXiv LaTeX*
+<h1 align="center">KiteFish-A1-1.5B</h1>
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Parameters](https://img.shields.io/badge/parameters-1.5B-green)
-![Architecture](https://img.shields.io/badge/architecture-LLaMA--style-purple)
+<p align="center">
+Scientific & Mathematical Language Model Trained from Raw arXiv LaTeX
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" />
+  <img src="https://img.shields.io/badge/parameters-1.5B-green" />
+  <img src="https://img.shields.io/badge/architecture-LLaMA--style-purple" />
+</p>
 
 **KiteFish-A1-1.5B** is a 1.5B parameter decoder-only transformer trained from scratch on raw arXiv LaTeX sources spanning mathematics, computer science, and theoretical physics.
 
