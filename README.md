@@ -1,124 +1,102 @@
-# KiteFish-A1-1.5B — Scientific Math Language Model
+# KiteFish-A1-1.5B  
+*A Scientific & Mathematical Language Model Trained from Raw arXiv LaTeX*
 
-KiteFish-A1-1.5B is a ~1.5B parameter decoder-only transformer trained from scratch on raw arXiv LaTeX sources spanning mathematics, computer science, and theoretical physics.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Parameters](https://img.shields.io/badge/parameters-1.5B-green)
+![Architecture](https://img.shields.io/badge/architecture-LLaMA--style-purple)
 
-This repository documents the full data pipeline, tokenizer design, and training process used to build a domain-specialized scientific language model under constrained compute (2×A100 80GB GPUs).
+**KiteFish-A1-1.5B** is a 1.5B parameter decoder-only transformer trained from scratch on raw arXiv LaTeX sources spanning mathematics, computer science, and theoretical physics.
 
----
+Paper (arXiv): https://arxiv.org/pdf/2602.17288  
+Model (HuggingFace): https://huggingface.co/KiteFishAI/KiteFish-A1-1.5B-Math  
 
-## Overview
+<p align="center">
+  <a href="https://arxiv.org/abs/2602.17288">
+    <img src="assets/paper_thumbnail.png" width="500">
+  </a>
+</p>
 
-KiteFish-A1-1.5B is an engineering-focused case study in training a scientific language model directly from raw arXiv archives.
+This repository documents the dataset construction pipeline, tokenizer design, and training process used to build a domain-specialized scientific language model under constrained compute (2× A100 80GB GPUs).
 
-Unlike curated or proprietary datasets, this model was built from:
+## Motivation
 
-- Raw arXiv metadata
-- `.tar.gz` LaTeX source archives
-- Custom filtering and normalization pipeline
-- Domain-aware tokenization for symbolic text
+Most open models are trained on heterogeneous web corpora.  
+KiteFish-A1 explores a different direction:
 
-The base model is not instruction-tuned. It is optimized for modeling mathematical and scientific text distributions.
+> What happens when a language model is trained purely on structured scientific LaTeX archives?
 
----
+The goal is to study domain specialization, engineering trade-offs, and training dynamics under realistic compute budgets.
 
 ## Model Specifications
 
 | Component | Value |
-|------------|--------|
+|-----------|--------|
 | Parameters | ~1.5B |
 | Architecture | LLaMA-style dense transformer |
 | Layers | 24 |
 | Hidden Size | 2048 |
 | FFN Size | 5504 |
 | Attention Heads | 16 |
-| Vocabulary Size | 102,400 |
+| Vocabulary | 102,400 |
 | Context Length | 4096 (trained at 768 tokens) |
 | Precision | bfloat16 |
 | Embeddings | Untied |
 
----
-
 ## Training Summary
 
-- Pretraining Tokens: 52.18B  
-- Post-training Tokens: 5B  
-- Raw Processed Corpus: ~200GB  
-- GPU Setup: 2× NVIDIA A100 (80GB)  
-- Total Experimental Runs: 24  
-- Final Validation Perplexity: ~4.2  
+Pretraining Tokens: 52.18B  
+Post-training Tokens: 5B  
+Processed Corpus Size: ~200GB  
+Experimental Runs: 24  
+Hardware: 2× NVIDIA A100 (80GB)  
 
 Optimization stack:
 
-- AdamW
-- ZeRO Stage 2
-- Gradient checkpointing
-- Mixed precision (bf16)
-- Weights & Biases monitoring
+- AdamW  
+- ZeRO Stage 2  
+- Gradient checkpointing  
+- bf16 mixed precision  
 
----
+Validation Perplexity: ~4.2 on held-out scientific corpus  
 
-## Dataset Construction Pipeline
+Training operated in a data-rich regime (~38 tokens per parameter), prioritizing domain robustness over benchmark optimization.
 
-The dataset was constructed directly from raw arXiv LaTeX archives.
+## Dataset Pipeline
 
-Pipeline stages:
+Constructed directly from raw arXiv LaTeX archives:
 
-1. Metadata filtering (subject, year, withdrawn removal)
-2. Archive validation
-3. Multi-file LaTeX resolution (`\input`, `\include`)
-4. Cleaning & normalization
-5. Deduplication
+1. Metadata filtering (subject selection, withdrawn removal)  
+2. `.tar.gz` archive extraction  
+3. Multi-file LaTeX resolution (`\input`, `\include`)  
+4. Cleaning and normalization  
+5. Deduplication  
 6. Domain-aware tokenizer training (102k vocabulary)
 
-Key engineering challenges:
+Key engineering challenges included LaTeX extraction inconsistencies, formula-heavy language detection issues, symbol fragmentation during tokenization, and large-scale I/O bottlenecks.
 
-- LaTeX extraction failures
-- False negatives in language detection for formula-heavy documents
-- Storage and I/O bottlenecks
-- Mathematical symbol fragmentation during tokenization
+## Performance Characteristics
 
----
+KiteFish-A1-1.5B is a base model.
 
-## Training Dynamics
+It demonstrates:
 
-Training was iteratively refined across 24 runs.
+- Strong familiarity with scientific writing style  
+- Stable LaTeX structural modeling  
+- Symbolic fluency  
 
-Observed behavior:
+It does not include:
 
-- Small-data regime (20GB) resulted in unstable convergence.
-- Full 200GB regime significantly improved gradient stability.
-- No sustained divergence between train and validation loss.
-- Gradient norms stabilized after early warmup.
-- GPU utilization remained consistently above 95%.
+- Instruction tuning  
+- RLHF or preference alignment  
+- Benchmark optimization  
 
-The model was trained in a data-rich regime (~38 tokens per parameter), prioritizing domain robustness over strict compute-optimal scaling.
+Downstream benchmark accuracy is currently modest without supervised fine-tuning or LoRA adaptation.
 
----
-
-## Repository Structure
-
-```
-
-.
-├── config.json
-├── ds_config.json
-├── train.py
-├── data_prep/
-│   ├── extraction.py
-│   ├── filters.py
-│   ├── latex_cleaner.py
-│   └── prepare_dataset.py
-├── dataset_train_val/
-│   ├── train.jsonl
-│   └── val.jsonl
-└── paper/
-
-````
-
+This release is intended primarily for research and experimentation.
 
 ## Reproducing Training
 
-### Requirements
+Requirements:
 
 - Python 3.10+
 - PyTorch
@@ -138,68 +116,20 @@ Launch training:
 deepspeed train.py
 ```
 
----
-
-## Intended Use
-
-Designed for:
-
-* Scientific text modeling
-* Mathematical generation
-* Research experimentation in domain-specific LMs
-
-Not optimized for:
-
-* General conversational AI
-* Instruction-following
-* Chat-based deployment
-
----
-
-## Limitations
-
-* Not instruction-tuned
-* Domain-restricted corpus
-* Training sequence length: 768 tokens
-* Significant storage requirements (~200GB processed)
-* Dependent on LaTeX extraction quality
-
----
-
 ## Citation
 
 If you use this work, please cite:
 
 ```bibtex
-@misc{kitefish_a1_1_5b,
-  title={ArXiv-to-Model: A Practical Study of Scientific LM Training},
+@article{kitefish2026,
+  title={KiteFish-A1: Training a Scientific Language Model from Raw LaTeX Archives},
   author={Your Name},
-  year={2026}
+  year={2026},
+  eprint={2602.17288},
+  archivePrefix={arXiv}
 }
 ```
 
----
-
 ## License
 
-MIT License
-
-Copyright (c) 2026 KiteFish
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT License © 2026 KiteFish
